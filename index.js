@@ -15,7 +15,6 @@ const server = http.createServer((request, response) => {
     const parsedUrl = url.parse(request.url, true);
 
     /* Get the path */
-
     const path = parsedUrl.pathname;
     const trimmedPath = path.replace(/^\/+|\/+$/g, '');
 
@@ -35,25 +34,40 @@ const server = http.createServer((request, response) => {
     ** request emits one event called data, we are catching that event, get data out of it and appending it to variable
     ** Because, we might get the payload in form of streams or webstreams */ 
     const decoder = new StringDecoder('utf-8');
-    let buffer = '';
+    let payload = '';
     request.on('data', (data) => {
-        buffer += decoder.write(data);
+        payload += decoder.write(data);
     });
 
     /* what next ? Received full payload
     ** request emits one more event called end, which means whole stream has been received
     ** we can move whole further processing inside this */
     request.on('end', () => {
-        buffer += decoder.end();
-        /* Send the response */
-        response.end('Hello World\n');
+        
+        //need to end the payload
+        payload += decoder.end();
+
+        const data = {
+            trimmedPath,
+            method,
+            headers,
+            queryStringObject,
+            payload
+        };
+
+        const handler = router.hasOwnProperty(trimmedPath) ? router[trimmedPath] : handlers.notFound;
+
+        handler(data,(stausCode, responsePayload) => {
+            statusCode = typeof(stausCode) === 'number' ? stausCode : 200;
+            responsePayload = typeof(responsePayload) === 'object' ? responsePayload : {};
+
+            /* Send the response */
+            response.writeHead(stausCode);
+            response.end(JSON.stringify(responsePayload));
+        });
 
         /* Log the request path */
-        console.log(`Request received on path: ${trimmedPath }, 
-        with method ${method},
-        with headers ${JSON.stringify(headers)},  
-        with queryString ${JSON.stringify(queryStringObject)} 
-        with payload  ${buffer}`);
+        console.log(`Request received:  ${JSON.stringify(data)}`);
     });
 });
 
@@ -61,3 +75,20 @@ const server = http.createServer((request, response) => {
 server.listen(3000, () => {
     console.log('Server is listening on port 3000');
 });
+
+//Handlers to handle, based on routing
+const handlers = {};
+
+handlers.sample = (data, callback) => {
+    callback(200, { authentication: true });
+};
+
+//To handle if router path does not exist, 404
+handlers.notFound = (data, callback) => {
+    callback(404);
+};
+
+//Route to map different handlers
+const router = {
+    sample : handlers.sample,
+};
