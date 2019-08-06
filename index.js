@@ -2,10 +2,13 @@
 * Main file for the api
 */
 
-//Dependencies
+//Dependencies Node/3rd party
 const http = require('http');
 const url = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
+
+//Dependencies Local
+const config = require('./config');
 
 //Setting up the server, Will responsd all the requests
 const server = http.createServer((request, response) => {
@@ -62,6 +65,7 @@ const server = http.createServer((request, response) => {
             responsePayload = typeof(responsePayload) === 'object' ? responsePayload : {};
 
             /* Send the response */
+            response.setHeader('Content-Type', 'application/json');
             response.writeHead(stausCode);
             response.end(JSON.stringify(responsePayload));
         });
@@ -72,8 +76,8 @@ const server = http.createServer((request, response) => {
 });
 
 //Listening the server on port 3000
-server.listen(3000, () => {
-    console.log('Server is listening on port 3000');
+server.listen(config.port, () => {
+    console.log(`Server is listening on port: ${config.port}, environment: ${config.envName}`);
 });
 
 //Handlers to handle, based on routing
