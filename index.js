@@ -1,5 +1,12 @@
 /*
-* Main file for the api
+* Entry Point to the SERVER
+* ___________________________________________________________________
+* 1. HTTP Server initialization and listener
+* 2. HTTPS Server initialization and listener
+* 3. Getting all information from REQUESTS - PATH, QUERYSTRING, BODY
+* 4. ROUTING based on PATHS
+* 5. HANDLERS for different routes
+* ___________________________________________________________________
 */
 
 //Dependencies Node/3rd party
@@ -13,7 +20,7 @@ const fs = require('fs');
 const config = require('./config');
 const dataLib = require('./lib/data-handler-lib');
 
-dataLib.update('test', 'newTestFile', {fizz: 'Buzz'} , (error) => {
+dataLib.delete('test', 'newTestFile', (error) => {
     console.log(`This is the error, ${JSON.stringify(error)}`);
 });
 
