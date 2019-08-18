@@ -13,7 +13,7 @@ const fs = require('fs');
 const config = require('./config');
 const dataLib = require('./lib/data-handler-lib');
 
-dataLib.create('test', 'newTestFile', {foo : 'bar'}, (error) => {
+dataLib.update('test', 'newTestFile', {fizz: 'Buzz'} , (error) => {
     console.log(`This is the error, ${JSON.stringify(error)}`);
 });
 
