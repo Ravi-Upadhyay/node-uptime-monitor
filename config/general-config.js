@@ -1,5 +1,5 @@
 /*
-* Configuration: This file contains all configuration settings of the project,
+* CONFIGURATION: This file contains all configuration settings of the project,
 * It handles: 
 * ____________________________________________________________________________
 * 1.) Environment Configuration

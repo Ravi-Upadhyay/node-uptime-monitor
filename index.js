@@ -17,12 +17,9 @@ const StringDecoder = require('string_decoder').StringDecoder;
 const fs = require('fs');
 
 //Dependencies Local
-const config = require('./config');
+const config = require('./config/general-config');
+const router = require('./config/route-config');
 const dataLib = require('./lib/data-handler-lib');
-
-dataLib.delete('test', 'newTestFile', (error) => {
-    console.log(`This is the error, ${JSON.stringify(error)}`);
-});
 
 //Global Declarations
 const httpsServerOptions = {
@@ -111,26 +108,4 @@ const serverProcessor = (request, response) => {
        /* Log the request path */
        console.log(`Request received:  ${JSON.stringify(data)}`);
    });    
-};
-
-//Handlers to handle, based on routing
-const handlers = {};
-
-handlers.sample = (data, callback) => {
-    callback(200, { authentication: true });
-};
-
-handlers.ping = (data, callback) => {
-    callback(200, data);
-};
-
-//To handle if router path does not exist, 404
-handlers.notFound = (data, callback) => {
-    callback(404);
-};
-
-//Route to map different handlers
-const router = {
-    sample  : handlers.sample,
-    ping    : handlers.ping,
 };
