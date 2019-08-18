@@ -11,6 +11,11 @@ const fs = require('fs');
 
 //Dependencies Local
 const config = require('./config');
+const dataLib = require('./lib/data-handler-lib');
+
+dataLib.create('test', 'newTestFile', {foo : 'bar'}, (error) => {
+    console.log(`This is the error, ${JSON.stringify(error)}`);
+});
 
 //Global Declarations
 const httpsServerOptions = {
@@ -108,6 +113,10 @@ handlers.sample = (data, callback) => {
     callback(200, { authentication: true });
 };
 
+handlers.ping = (data, callback) => {
+    callback(200, data);
+};
+
 //To handle if router path does not exist, 404
 handlers.notFound = (data, callback) => {
     callback(404);
@@ -115,5 +124,6 @@ handlers.notFound = (data, callback) => {
 
 //Route to map different handlers
 const router = {
-    sample : handlers.sample,
+    sample  : handlers.sample,
+    ping    : handlers.ping,
 };
