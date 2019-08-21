@@ -19,6 +19,7 @@ const fs = require('fs');
 //Dependencies Local
 const config = require('./config/general-config');
 const router = require('./config/route-config');
+const helpers = require('./lib/general-helpers-lib');
 const dataLib = require('./lib/data-handler-lib');
 
 //Global Declarations
@@ -84,7 +85,7 @@ const serverProcessor = (request, response) => {
        
        //need to end the payload
        payload += decoder.end();
-
+       payload = helpers.parseStrToJson(payload);
        const data = {
            trimmedPath,
            method,

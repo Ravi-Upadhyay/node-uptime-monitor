@@ -12,6 +12,7 @@ const router = {};
 
 router.sample  = handlers.sample,
 router.ping    = handlers.ping,
+router.users   = handlers.users
 
 
 module.exports = router;
