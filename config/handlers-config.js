@@ -88,4 +88,26 @@ _users.post = (data, callback) => {
     }
 }
 
+/*
+* Required parameter - phone
+* Optional parameter - none 
+* @TODO: Only authenticated users should be able to see their data, they should not be able to see other's data
+*/
+_users.get = (data, callback) => {
+    const phone = dataValidation.isValidPhone(data.queryStringObject.phone);
+    if (phone) {
+        dataHandler.read('users', phone, (error, user) => {
+            if (!error && user) {
+                // Delete hashed password, As we do not want to let user see password
+                delete user.hashedPassword;
+                callback(200, user);
+            } else {
+                callback(404);
+            }
+        });
+    } else {
+        callback(404, {Error: 'Missing required field'});
+    }
+};
+
 module.exports = handlers;
