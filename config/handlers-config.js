@@ -110,4 +110,43 @@ _users.get = (data, callback) => {
     }
 };
 
+/*
+* Required parameter - phone
+* Optional parameter - firstName, lastName, password
+* @TODO: Only authenticate users should be able to change their data 
+*/
+_users.put = (data, callback) => {
+    const phone = dataValidation.isValidPhone(data.payload.phone);
+    if (phone) {
+        const firstName = dataValidation.isValidString(data.payload.firstName);
+        const lastName = dataValidation.isValidString(data.payload.lastName);
+        const password = dataValidation.isValidString(data.payload.password);
+
+        if (firstName || lastName || password) {
+            dataHandler.read('users', phone, (errorR, user) => {
+                if (!errorR && user) {
+                    user = firstName ? Object.assign(user, { firstName }) : user;
+                    user = lastName ? Object.assign(user, { lastName }) : user;
+                    user = password ? Object.assign(user, { hashedPassword : helpers.hash(password) }) : user;
+
+                    dataHandler.update('users', phone, user, (errorU) => {
+                        if (!errorU) { 
+                            callback(200, false);
+                        } else { 
+                            callback(500, {Error: 'Could not update the user'});
+                        }
+                    });   
+                } else {
+                    callback(400, {Error: 'Missing user to update'});
+                }
+            });
+        } else {
+            callback(400, {Error: 'Missing required field to update'});
+        }
+
+    } else {
+        callback(400, {Error: 'Missing required field'});
+    }
+};
+
 module.exports = handlers;
